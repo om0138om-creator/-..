@@ -1,0 +1,10 @@
+{
+  "name": "azkar-muslim",
+  "version": "1.0.0",
+  "description": "تطبيق أذكار المسلم",
+  "dependencies": {
+    "@capacitor/android": "^5.0.0",
+    "@capacitor/core": "^5.0.0",
+    "@capacitor/cli": "^5.0.0"
+  }
+}
