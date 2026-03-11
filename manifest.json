@@ -1,0 +1,93 @@
+{
+    "name": "أذكار المسلم",
+    "short_name": "أذكار",
+    "description": "تطبيق أذكار المسلم الشامل - أذكار الصباح والمساء والنوم والاستيقاظ وأدعية وتسبيحات",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#1a5f4a",
+    "theme_color": "#1a5f4a",
+    "dir": "rtl",
+    "lang": "ar",
+    "scope": "/",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%231a5f4a'/><text x='256' y='340' font-size='280' text-anchor='middle' fill='white'>📿</text></svg>",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='48' fill='%231a5f4a'/><text x='96' y='130' font-size='100' text-anchor='middle' fill='white'>📿</text></svg>",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 144'><rect width='144' height='144' rx='36' fill='%231a5f4a'/><text x='72' y='98' font-size='75' text-anchor='middle' fill='white'>📿</text></svg>",
+            "sizes": "144x144",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect width='96' height='96' rx='24' fill='%231a5f4a'/><text x='48' y='66' font-size='50' text-anchor='middle' fill='white'>📿</text></svg>",
+            "sizes": "96x96",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'><rect width='72' height='72' rx='18' fill='%231a5f4a'/><text x='36' y='50' font-size='38' text-anchor='middle' fill='white'>📿</text></svg>",
+            "sizes": "72x72",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect width='48' height='48' rx='12' fill='%231a5f4a'/><text x='24' y='33' font-size='25' text-anchor='middle' fill='white'>📿</text></svg>",
+            "sizes": "48x48",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1080 1920'><rect width='1080' height='1920' fill='%23f5f5f5'/><rect width='1080' height='200' fill='%231a5f4a'/><text x='540' y='130' font-size='60' text-anchor='middle' fill='white' font-family='Arial'>أذكار المسلم</text></svg>",
+            "sizes": "1080x1920",
+            "type": "image/svg+xml",
+            "form_factor": "narrow"
+        }
+    ],
+    "categories": ["lifestyle", "education", "utilities"],
+    "shortcuts": [
+        {
+            "name": "أذكار الصباح",
+            "short_name": "الصباح",
+            "description": "أذكار الصباح الكاملة",
+            "url": "/?page=morning",
+            "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect width='96' height='96' rx='24' fill='%23ff9f43'/><text x='48' y='66' font-size='50' text-anchor='middle'>🌅</text></svg>", "sizes": "96x96"}]
+        },
+        {
+            "name": "أذكار المساء",
+            "short_name": "المساء",
+            "description": "أذكار المساء الكاملة",
+            "url": "/?page=evening",
+            "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect width='96' height='96' rx='24' fill='%235f27cd'/><text x='48' y='66' font-size='50' text-anchor='middle'>🌆</text></svg>", "sizes": "96x96"}]
+        },
+        {
+            "name": "السبحة",
+            "short_name": "السبحة",
+            "description": "السبحة الإلكترونية",
+            "url": "/?page=tasbih",
+            "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect width='96' height='96' rx='24' fill='%23ee5a24'/><text x='48' y='66' font-size='50' text-anchor='middle'>📿</text></svg>", "sizes": "96x96"}]
+        }
+    ],
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "display_override": ["standalone", "minimal-ui"],
+    "handle_links": "preferred",
+    "launch_handler": {
+        "client_mode": "navigate-existing"
+    },
+    "edge_side_panel": {
+        "preferred_width": 400
+    }
+}

@@ -1,0 +1,226 @@
+// ===================================
+// أذكار المسلم - Service Worker
+// للعمل بدون إنترنت (PWA)
+// ===================================
+
+const CACHE_NAME = 'azkar-muslim-v2.0.0';
+const OFFLINE_URL = '/';
+
+// الملفات المطلوب تخزينها
+const ASSETS_TO_CACHE = [
+    '/',
+    '/index.html',
+    '/styles.css',
+    '/app.js',
+    '/azkar-data.js',
+    '/manifest.json',
+    'https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap'
+];
+
+// تثبيت Service Worker
+self.addEventListener('install', (event) => {
+    console.log('[SW] Installing Service Worker...');
+    
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then((cache) => {
+                console.log('[SW] Caching app shell...');
+                return cache.addAll(ASSETS_TO_CACHE);
+            })
+            .then(() => {
+                console.log('[SW] App shell cached successfully');
+                return self.skipWaiting();
+            })
+            .catch((error) => {
+                console.error('[SW] Failed to cache:', error);
+            })
+    );
+});
+
+// تفعيل Service Worker
+self.addEventListener('activate', (event) => {
+    console.log('[SW] Activating Service Worker...');
+    
+    event.waitUntil(
+        caches.keys()
+            .then((cacheNames) => {
+                return Promise.all(
+                    cacheNames
+                        .filter((cacheName) => cacheName !== CACHE_NAME)
+                        .map((cacheName) => {
+                            console.log('[SW] Deleting old cache:', cacheName);
+                            return caches.delete(cacheName);
+                        })
+                );
+            })
+            .then(() => {
+                console.log('[SW] Service Worker activated');
+                return self.clients.claim();
+            })
+    );
+});
+
+// استراتيجية التخزين المؤقت: Cache First, Network Fallback
+self.addEventListener('fetch', (event) => {
+    // تجاهل الطلبات غير GET
+    if (event.request.method !== 'GET') {
+        return;
+    }
+
+    // تجاهل طلبات chrome-extension
+    if (event.request.url.startsWith('chrome-extension://')) {
+        return;
+    }
+
+    event.respondWith(
+        caches.match(event.request)
+            .then((cachedResponse) => {
+                if (cachedResponse) {
+                    // إرجاع من الكاش
+                    // وفي الخلفية، تحديث الكاش
+                    event.waitUntil(
+                        fetch(event.request)
+                            .then((networkResponse) => {
+                                if (networkResponse && networkResponse.status === 200) {
+                                    caches.open(CACHE_NAME)
+                                        .then((cache) => {
+                                            cache.put(event.request, networkResponse.clone());
+                                        });
+                                }
+                            })
+                            .catch(() => {
+                                // تجاهل أخطاء الشبكة
+                            })
+                    );
+                    
+                    return cachedResponse;
+                }
+
+                // جلب من الشبكة وتخزين في الكاش
+                return fetch(event.request)
+                    .then((networkResponse) => {
+                        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+                            return networkResponse;
+                        }
+
+                        const responseToCache = networkResponse.clone();
+                        
+                        caches.open(CACHE_NAME)
+                            .then((cache) => {
+                                cache.put(event.request, responseToCache);
+                            });
+
+                        return networkResponse;
+                    })
+                    .catch(() => {
+                        // إذا فشل الجلب، إرجاع صفحة الأوفلاين
+                        if (event.request.mode === 'navigate') {
+                            return caches.match(OFFLINE_URL);
+                        }
+                        
+                        return new Response('Offline', {
+                            status: 503,
+                            statusText: 'Service Unavailable'
+                        });
+                    });
+            })
+    );
+});
+
+// استقبال الرسائل من التطبيق
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+    
+    if (event.data && event.data.type === 'CLEAR_CACHE') {
+        caches.delete(CACHE_NAME).then(() => {
+            console.log('[SW] Cache cleared');
+        });
+    }
+});
+
+// إشعارات Push (للتذكيرات المستقبلية)
+self.addEventListener('push', (event) => {
+    const options = {
+        body: event.data ? event.data.text() : 'حان وقت الأذكار',
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="%231a5f4a"/><text x="48" y="66" font-size="50" text-anchor="middle" fill="white">📿</text></svg>',
+        badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="%231a5f4a"/><text x="48" y="66" font-size="50" text-anchor="middle" fill="white">📿</text></svg>',
+        vibrate: [200, 100, 200],
+        tag: 'azkar-reminder',
+        renotify: true,
+        requireInteraction: false,
+        dir: 'rtl',
+        lang: 'ar',
+        actions: [
+            { action: 'open', title: 'فتح التطبيق' },
+            { action: 'dismiss', title: 'تجاهل' }
+        ]
+    };
+
+    event.waitUntil(
+        self.registration.showNotification('أذكار المسلم 📿', options)
+    );
+});
+
+// التعامل مع نقر الإشعارات
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+
+    if (event.action === 'dismiss') {
+        return;
+    }
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then((clientList) => {
+                // إذا كان التطبيق مفتوحاً، ركز عليه
+                for (const client of clientList) {
+                    if (client.url.includes('/') && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+                // وإلا افتح نافذة جديدة
+                if (clients.openWindow) {
+                    return clients.openWindow('/');
+                }
+            })
+    );
+});
+
+// المزامنة في الخلفية
+self.addEventListener('sync', (event) => {
+    if (event.tag === 'sync-azkar') {
+        event.waitUntil(
+            // يمكن إضافة مزامنة البيانات هنا
+            Promise.resolve()
+        );
+    }
+});
+
+// Periodic Background Sync للتذكيرات
+self.addEventListener('periodicsync', (event) => {
+    if (event.tag === 'morning-azkar') {
+        event.waitUntil(
+            self.registration.showNotification('أذكار الصباح 🌅', {
+                body: 'حان وقت أذكار الصباح - ابدأ يومك بذكر الله',
+                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="%23ff9f43"/><text x="48" y="66" font-size="50" text-anchor="middle">🌅</text></svg>',
+                tag: 'morning-reminder',
+                dir: 'rtl'
+            })
+        );
+    }
+    
+    if (event.tag === 'evening-azkar') {
+        event.waitUntil(
+            self.registration.showNotification('أذكار المساء 🌆', {
+                body: 'حان وقت أذكار المساء - اختم يومك بالذكر',
+                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="%235f27cd"/><text x="48" y="66" font-size="50" text-anchor="middle">🌆</text></svg>',
+                tag: 'evening-reminder',
+                dir: 'rtl'
+            })
+        );
+    }
+});
+
+console.log('[SW] Service Worker loaded successfully');

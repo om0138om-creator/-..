@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a5f4a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="تطبيق أذكار المسلم - أذكار الصباح والمساء والنوم والاستيقاظ وتسبيحات وأدعية">
+    <title>أذكار المسلم</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📿</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- شاشة التحميل -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-icon">📿</div>
+            <h1>أذكار المسلم</h1>
+            <p>حصّن نفسك بذكر الله</p>
+            <div class="loader"></div>
+        </div>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div id="app">
+        <!-- الهيدر -->
+        <header id="main-header">
+            <div class="header-content">
+                <button id="menu-btn" class="icon-btn" aria-label="القائمة">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+                <h1 id="page-title">أذكار المسلم</h1>
+                <button id="theme-btn" class="icon-btn" aria-label="تغيير المظهر">
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="sun-icon">
+                        <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+                    </svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="moon-icon">
+                        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                    </svg>
+                </button>
+            </div>
+            <!-- شريط التقدم اليومي -->
+            <div class="daily-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="daily-progress-fill"></div>
+                </div>
+                <span class="progress-text" id="daily-progress-text">0% من أذكار اليوم</span>
+            </div>
+        </header>
+
+        <!-- القائمة الجانبية -->
+        <div id="sidebar-overlay"></div>
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar">📿</div>
+                    <div class="user-details">
+                        <h3>أذكار المسلم</h3>
+                        <p>حصّن نفسك</p>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">الرئيسية</span>
+                </li>
+                <li class="nav-item" data-page="morning">
+                    <span class="nav-icon">🌅</span>
+                    <span class="nav-text">أذكار الصباح</span>
+                </li>
+                <li class="nav-item" data-page="evening">
+                    <span class="nav-icon">🌆</span>
+                    <span class="nav-text">أذكار المساء</span>
+                </li>
+                <li class="nav-item" data-page="sleep">
+                    <span class="nav-icon">🌙</span>
+                    <span class="nav-text">أذكار النوم</span>
+                </li>
+                <li class="nav-item" data-page="wakeup">
+                    <span class="nav-icon">⭐</span>
+                    <span class="nav-text">أذكار الاستيقاظ</span>
+                </li>
+                <li class="nav-item" data-page="prayer">
+                    <span class="nav-icon">🕌</span>
+                    <span class="nav-text">أذكار الصلاة</span>
+                </li>
+                <li class="nav-item" data-page="quran">
+                    <span class="nav-icon">📖</span>
+                    <span class="nav-text">أدعية قرآنية</span>
+                </li>
+                <li class="nav-item" data-page="prophet">
+                    <span class="nav-icon">💚</span>
+                    <span class="nav-text">أدعية نبوية</span>
+                </li>
+                <li class="nav-item" data-page="tasbih">
+                    <span class="nav-icon">📿</span>
+                    <span class="nav-text">السبحة الإلكترونية</span>
+                </li>
+                <li class="nav-item" data-page="favorites">
+                    <span class="nav-icon">❤️</span>
+                    <span class="nav-text">المفضلة</span>
+                </li>
+                <li class="nav-item" data-page="ruqyah">
+                    <span class="nav-icon">🛡️</span>
+                    <span class="nav-text">الرقية الشرعية</span>
+                </li>
+                <li class="nav-item" data-page="names">
+                    <span class="nav-icon">✨</span>
+                    <span class="nav-text">أسماء الله الحسنى</span>
+                </li>
+                <li class="nav-divider"></li>
+                <li class="nav-item" data-page="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">الإعدادات</span>
+                </li>
+                <li class="nav-item" data-page="about">
+                    <span class="nav-icon">ℹ️</span>
+                    <span class="nav-text">عن التطبيق</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- المحتوى الرئيسي -->
+        <main id="main-content">
+            <!-- الصفحة الرئيسية -->
+            <section id="home-page" class="page active">
+                <!-- بطاقة الوقت والتاريخ -->
+                <div class="time-card">
+                    <div class="islamic-date" id="islamic-date"></div>
+                    <div class="gregorian-date" id="gregorian-date"></div>
+                    <div class="current-time" id="current-time"></div>
+                    <div class="time-period" id="time-period"></div>
+                </div>
+
+                <!-- الاقتراح اليومي -->
+                <div class="suggestion-card" id="suggestion-card">
+                    <div class="suggestion-header">
+                        <span class="suggestion-icon">💡</span>
+                        <span class="suggestion-title">اقتراح الآن</span>
+                    </div>
+                    <p class="suggestion-text" id="suggestion-text"></p>
+                    <button class="suggestion-btn" id="suggestion-btn">ابدأ الآن</button>
+                </div>
+
+                <!-- الأقسام الرئيسية -->
+                <div class="categories-grid">
+                    <div class="category-card morning" data-page="morning">
+                        <div class="category-icon">🌅</div>
+                        <div class="category-info">
+                            <h3>أذكار الصباح</h3>
+                            <p>ابدأ يومك بذكر الله</p>
+                        </div>
+                        <div class="category-badge" id="morning-badge">0/27</div>
+                    </div>
+                    <div class="category-card evening" data-page="evening">
+                        <div class="category-icon">🌆</div>
+                        <div class="category-info">
+                            <h3>أذكار المساء</h3>
+                            <p>اختم يومك بالذكر</p>
+                        </div>
+                        <div class="category-badge" id="evening-badge">0/27</div>
+                    </div>
+                    <div class="category-card sleep" data-page="sleep">
+                        <div class="category-icon">🌙</div>
+                        <div class="category-info">
+                            <h3>أذكار النوم</h3>
+                            <p>نم على ذكر الله</p>
+                        </div>
+                        <div class="category-badge" id="sleep-badge">0/15</div>
+                    </div>
+                    <div class="category-card wakeup" data-page="wakeup">
+                        <div class="category-icon">⭐</div>
+                        <div class="category-info">
+                            <h3>أذكار الاستيقاظ</h3>
+                            <p>استيقظ بنشاط</p>
+                        </div>
+                        <div class="category-badge" id="wakeup-badge">0/8</div>
+                    </div>
+                    <div class="category-card prayer" data-page="prayer">
+                        <div class="category-icon">🕌</div>
+                        <div class="category-info">
+                            <h3>أذكار الصلاة</h3>
+                            <p>بعد كل صلاة</p>
+                        </div>
+                        <div class="category-badge" id="prayer-badge">0/12</div>
+                    </div>
+                    <div class="category-card tasbih" data-page="tasbih">
+                        <div class="category-icon">📿</div>
+                        <div class="category-info">
+                            <h3>السبحة</h3>
+                            <p>عداد التسبيح</p>
+                        </div>
+                        <div class="category-badge" id="tasbih-count">0</div>
+                    </div>
+                </div>
+
+                <!-- ذكر عشوائي -->
+                <div class="random-zikr-card">
+                    <div class="random-header">
+                        <span>💎 ذكر اليوم</span>
+                        <button class="refresh-btn" id="refresh-zikr">🔄</button>
+                    </div>
+                    <p class="random-text" id="random-zikr"></p>
+                    <div class="random-actions">
+                        <button class="action-btn share-btn" id="share-random">
+                            <span>📤</span> مشاركة
+                        </button>
+                        <button class="action-btn copy-btn" id="copy-random">
+                            <span>📋</span> نسخ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- إحصائيات سريعة -->
+                <div class="stats-card">
+                    <h3>📊 إحصائياتك</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-azkar">0</div>
+                            <div class="stat-label">إجمالي الأذكار</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="streak-days">0</div>
+                            <div class="stat-label">أيام متتالية</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="tasbih-total">0</div>
+                            <div class="stat-label">التسبيحات</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="favorites-count">0</div>
+                            <div class="stat-label">المفضلة</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- صفحة الأذكار (قالب مشترك) -->
+            <section id="azkar-page" class="page">
+                <div class="azkar-header">
+                    <div class="azkar-progress">
+                        <span id="azkar-completed">0</span>/<span id="azkar-total">0</span>
+                    </div>
+                    <button class="reset-btn" id="reset-azkar">إعادة تعيين</button>
+                </div>
+                <div class="azkar-list" id="azkar-list"></div>
+            </section>
+
+            <!-- صفحة السبحة -->
+            <section id="tasbih-page" class="page">
+                <div class="tasbih-container">
+                    <div class="tasbih-display">
+                        <div class="tasbih-count-main" id="tasbih-main-count">0</div>
+                        <div class="tasbih-target">الهدف: <span id="tasbih-target">33</span></div>
+                    </div>
+                    
+                    <div class="tasbih-text-selector">
+                        <button class="tasbih-text-btn active" data-text="سبحان الله">سبحان الله</button>
+                        <button class="tasbih-text-btn" data-text="الحمد لله">الحمد لله</button>
+                        <button class="tasbih-text-btn" data-text="الله أكبر">الله أكبر</button>
+                        <button class="tasbih-text-btn" data-text="لا إله إلا الله">لا إله إلا الله</button>
+                        <button class="tasbih-text-btn" data-text="أستغفر الله">أستغفر الله</button>
+                        <button class="tasbih-text-btn" data-text="لا حول ولا قوة إلا بالله">لا حول ولا قوة إلا بالله</button>
+                    </div>
+
+                    <div class="tasbih-current-text" id="current-tasbih-text">سبحان الله</div>
+
+                    <button class="tasbih-btn" id="tasbih-btn">
+                        <span class="tasbih-btn-text">اضغط</span>
+                        <span class="tasbih-ripple"></span>
+                    </button>
+
+                    <div class="tasbih-controls">
+                        <button class="tasbih-control-btn" id="tasbih-reset">
+                            <span>🔄</span> تصفير
+                        </button>
+                        <button class="tasbih-control-btn" id="tasbih-target-btn">
+                            <span>🎯</span> الهدف
+                        </button>
+                        <button class="tasbih-control-btn" id="tasbih-sound-btn">
+                            <span>🔊</span> الصوت
+                        </button>
+                        <button class="tasbih-control-btn" id="tasbih-vibrate-btn">
+                            <span>📳</span> الاهتزاز
+                        </button>
+                    </div>
+
+                    <div class="tasbih-stats">
+                        <div class="tasbih-stat">
+                            <span class="tasbih-stat-value" id="tasbih-session">0</span>
+                            <span class="tasbih-stat-label">هذه الجلسة</span>
+                        </div>
+                        <div class="tasbih-stat">
+                            <span class="tasbih-stat-value" id="tasbih-today">0</span>
+                            <span class="tasbih-stat-label">اليوم</span>
+                        </div>
+                        <div class="tasbih-stat">
+                            <span class="tasbih-stat-value" id="tasbih-all-time">0</span>
+                            <span class="tasbih-stat-label">الإجمالي</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- صفحة المفضلة -->
+            <section id="favorites-page" class="page">
+                <div class="favorites-empty" id="favorites-empty">
+                    <div class="empty-icon">❤️</div>
+                    <h3>لا توجد أذكار مفضلة</h3>
+                    <p>اضغط على ❤️ في أي ذكر لإضافته للمفضلة</p>
+                </div>
+                <div class="favorites-list" id="favorites-list"></div>
+            </section>
+
+            <!-- صفحة الرقية الشرعية -->
+            <section id="ruqyah-page" class="page">
+                <div class="ruqyah-intro">
+                    <p>الرقية الشرعية من الكتاب والسنة للعلاج والتحصين</p>
+                </div>
+                <div class="azkar-list" id="ruqyah-list"></div>
+            </section>
+
+            <!-- صفحة أسماء الله الحسنى -->
+            <section id="names-page" class="page">
+                <div class="names-intro">
+                    <p>أسماء الله الحسنى - 99 اسماً</p>
+                </div>
+                <div class="names-grid" id="names-grid"></div>
+            </section>
+
+            <!-- صفحة الإعدادات -->
+            <section id="settings-page" class="page">
+                <div class="settings-list">
+                    <div class="settings-group">
+                        <h3>المظهر</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-icon">🌙</span>
+                                <span class="setting-label">الوضع الليلي</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="dark-mode-toggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-icon">🔤</span>
+                                <span class="setting-label">حجم الخط</span>
+                            </div>
+                            <select id="font-size-select" class="setting-select">
+                                <option value="small">صغير</option>
+                                <option value="medium" selected>متوسط</option>
+                                <option value="large">كبير</option>
+                                <option value="xlarge">كبير جداً</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h3>التنبيهات</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-icon">🔔</span>
+                                <span class="setting-label">تذكير أذكار الصباح</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="morning-reminder">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-icon">🔔</span>
+                                <span class="setting-label">تذكير أذكار المساء</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="evening-reminder">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>الصوت والاهتزاز</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-icon">🔊</span>
+                                <span class="setting-label">صوت السبحة</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="tasbih-sound" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-icon">📳</span>
+                                <span class="setting-label">اهتزاز السبحة</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="tasbih-vibrate" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>البيانات</h3>
+                        <div class="setting-item clickable" id="reset-all-data">
+                            <div class="setting-info">
+                                <span class="setting-icon">🗑️</span>
+                                <span class="setting-label">مسح جميع البيانات</span>
+                            </div>
+                            <span class="setting-arrow">←</span>
+                        </div>
+                        <div class="setting-item clickable" id="export-data">
+                            <div class="setting-info">
+                                <span class="setting-icon">📤</span>
+                                <span class="setting-label">تصدير البيانات</span>
+                            </div>
+                            <span class="setting-arrow">←</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- صفحة عن التطبيق -->
+            <section id="about-page" class="page">
+                <div class="about-content">
+                    <div class="about-logo">📿</div>
+                    <h2>أذكار المسلم</h2>
+                    <p class="version">الإصدار 2.0.0</p>
+                    
+                    <div class="about-features">
+                        <h3>مميزات التطبيق</h3>
+                        <ul>
+                            <li>✅ أذكار الصباح والمساء كاملة</li>
+                            <li>✅ أذكار النوم والاستيقاظ</li>
+                            <li>✅ أذكار بعد الصلاة</li>
+                            <li>✅ أدعية قرآنية ونبوية</li>
+                            <li>✅ سبحة إلكترونية متطورة</li>
+                            <li>✅ الرقية الشرعية</li>
+                            <li>✅ أسماء الله الحسنى</li>
+                            <li>✅ حفظ المفضلة</li>
+                            <li>✅ إحصائيات مفصلة</li>
+                            <li>✅ وضع ليلي</li>
+                            <li>✅ يعمل بدون إنترنت</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-share">
+                        <h3>شارك التطبيق</h3>
+                        <p>انشر الخير وشارك التطبيق مع أصدقائك</p>
+                        <button class="share-app-btn" id="share-app">
+                            📤 مشاركة التطبيق
+                        </button>
+                    </div>
+
+                    <div class="about-footer">
+                        <p>صدقة جارية - لا تنسونا من صالح دعائكم</p>
+                        <p class="copyright">© 2024 أذكار المسلم</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- شريط التنقل السفلي -->
+        <nav id="bottom-nav">
+            <button class="nav-btn active" data-page="home">
+                <span class="nav-btn-icon">🏠</span>
+                <span class="nav-btn-text">الرئيسية</span>
+            </button>
+            <button class="nav-btn" data-page="morning">
+                <span class="nav-btn-icon">🌅</span>
+                <span class="nav-btn-text">الصباح</span>
+            </button>
+            <button class="nav-btn" data-page="evening">
+                <span class="nav-btn-icon">🌆</span>
+                <span class="nav-btn-text">المساء</span>
+            </button>
+            <button class="nav-btn" data-page="tasbih">
+                <span class="nav-btn-icon">📿</span>
+                <span class="nav-btn-text">السبحة</span>
+            </button>
+            <button class="nav-btn" data-page="favorites">
+                <span class="nav-btn-icon">❤️</span>
+                <span class="nav-btn-text">المفضلة</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modal للهدف -->
+    <div id="target-modal" class="modal">
+        <div class="modal-content">
+            <h3>تحديد الهدف</h3>
+            <div class="target-options">
+                <button class="target-option" data-target="33">33</button>
+                <button class="target-option" data-target="99">99</button>
+                <button class="target-option" data-target="100">100</button>
+                <button class="target-option" data-target="500">500</button>
+                <button class="target-option" data-target="1000">1000</button>
+            </div>
+            <div class="custom-target">
+                <input type="number" id="custom-target-input" placeholder="هدف مخصص">
+                <button id="set-custom-target">تعيين</button>
+            </div>
+            <button class="modal-close" id="close-target-modal">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- Toast للإشعارات -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
